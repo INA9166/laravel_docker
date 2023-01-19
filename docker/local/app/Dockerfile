@@ -24,12 +24,3 @@ RUN /bin/sh -c a2enmod rewrite
 EXPOSE 8080
 
 WORKDIR /var/www/html/laravel
-
-RUN composer install \
-&& php artisan cache:clear \
-&& php artisan config:clear \
-&& php artisan route:clear \
-&& php artisan route:clear \
-&& chmod 777 ./storage/logs \
-&& chmod 777 ./storage/framework/sessions \
-&& chmod 777 ./strage/framework/views
