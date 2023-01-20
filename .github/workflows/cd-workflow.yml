@@ -57,5 +57,5 @@ jobs:
 
     - name: Deploy to ECS
       run: |
-        aws ecs update-service --service $ECS_WEB_SERVICE --cluster ecs-lesson-cluster --force-new-deployment
+        aws ecs update-service --service $ECS_WEB_SERVICE --cluster aws-infra-ecs-cluster --force-new-deployment
 
