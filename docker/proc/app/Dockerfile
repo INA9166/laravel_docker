@@ -3,8 +3,8 @@ FROM php:8.1-apache
 ENV TZ Asia/Tokyo
 
 ADD ./php.ini /usr/local/etc/php/php.ini
-ADD ./default.conf /etc/apache2/sites-enabled/000-default.conf    
-COPY ../../../src/laravel /var/www/html/laravel
+ADD ./default.conf /etc/apache2/sites-enabled/000-default.conf
+ADD ../../../src/laravel /var/www/html/laravel
 
 RUN cd /usr/bin && curl -s http://getcomposer.org/installer | php && ln -s /usr/bin/composer.phar /usr/bin/composer
 
