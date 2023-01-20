@@ -49,7 +49,7 @@ jobs:
         docker push $ECR_REGISTRY/$NGINX_CONTAINER_NAME:latest
 
     - name: laravel push to ECR
-      id: build-image-nginx
+      id: build-image-laravel
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
       run: |
