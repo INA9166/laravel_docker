@@ -1,0 +1,65 @@
+name: Deploy work flow for Amazon ECS
+
+on:
+  pull_request:
+    branches:
+      - main
+    types: [closed]
+
+env:
+  AWS_REGION: ap-northeast-1
+  ECS_WEB_SERVICE: aws-infra-ecs-service
+  NGINX_CONTAINER_NAME: ecs-larael
+  LARAVEL_CONTAINER_NAME: ecs-laravel
+  NGINX_TAG: 1.0.0
+  LARAVEL_TAG: 1.0.0
+  SLACK_WEBHOOK: https://xxxxxxxx ##change this URL!!
+
+
+jobs:
+  deploy:
+    name: deploy
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.AWS_REGION }}
+
+    - name: Login to ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
+
+    - name: nginx push to ECR
+      id: build-image-nginx
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+      run: |
+        cd /docker/proc
+        docker build -t $ECR_REGISTRY/$NGINX_CONTAINER_NAME:$NGINX_TAG .
+        docker tag $ECR_REGISTRY/$NGINX_CONTAINER_NAME:$NGINX_TAG $ECR_REGISTRY/$NGINX_CONTAINER_NAME:latest
+        docker push $ECR_REGISTRY/$NGINX_CONTAINER_NAME:$NGINX_TAG
+        docker push $ECR_REGISTRY/$NGINX_CONTAINER_NAME:latest
+
+    - name: laravel push to ECR
+      id: build-image-nginx
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+      run: |
+        cd /docker/proc
+        docker build -t $ECR_REGISTRY/$LARAVEL_CONTAINER_NAME:$LARAVEL_TAG .
+        docker tag $ECR_REGISTRY/$LARAVEL_CONTAINER_NAME:$LARAVEL_TAG $ECR_REGISTRY/$LARAVEL_CONTAINER_NAME:latest
+        docker push $ECR_REGISTRY/$LARAVEL_CONTAINER_NAME:$LARAVEL_TAG
+        docker push $ECR_REGISTRY/$LARAVEL_CONTAINER_NAME:latest
+
+    - name: Deploy to ECS
+      run: |
+        aws ecs update-service --service $ECS_WEB_SERVICE --cluster ecs-lesson-cluster --force-new-deployment
+
