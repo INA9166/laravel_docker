@@ -7,7 +7,7 @@ ADD ./default.conf /etc/apache2/sites-enabled/000-default.conf
 
 RUN cd /usr/bin && curl -s http://getcomposer.org/installer | php && ln -s /usr/bin/composer.phar /usr/bin/composer
 
-COPY ./src/laravel /var/www/html/laravel
+COPY ../../../src/laravel /var/www/html/laravel
 
 # 作業ディレクトリを変更
 WORKDIR /var/www/html/laravel
