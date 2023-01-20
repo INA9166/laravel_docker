@@ -40,6 +40,7 @@ jobs:
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
       run: |
+        cd .
         docker build -t $ECR_REGISTRY/$NGINX_CONTAINER_NAME:$NGINX_TAG ./docker/proc/web/.
         docker tag $ECR_REGISTRY/$NGINX_CONTAINER_NAME:$NGINX_TAG $ECR_REGISTRY/$NGINX_CONTAINER_NAME:latest
         docker push $ECR_REGISTRY/$NGINX_CONTAINER_NAME:$NGINX_TAG
@@ -50,6 +51,7 @@ jobs:
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
       run: |
+        cd .
         docker build -t $ECR_REGISTRY/$LARAVEL_CONTAINER_NAME:$LARAVEL_TAG ./docker/proc/app/.
         docker tag $ECR_REGISTRY/$LARAVEL_CONTAINER_NAME:$LARAVEL_TAG $ECR_REGISTRY/$LARAVEL_CONTAINER_NAME:latest
         docker push $ECR_REGISTRY/$LARAVEL_CONTAINER_NAME:$LARAVEL_TAG
