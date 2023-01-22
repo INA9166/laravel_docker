@@ -1,15 +1,6 @@
 version: "3.9"
 
 services:
-  app:
-    build:
-      context: .
-      dockerfile: ./docker/local/app/Dockerfile
-    ports:
-      - 8080:80
-    container_name: container_app
-    volumes:
-       - ./src:/var/www/html
   web:
     build:
       context: .
@@ -17,7 +8,15 @@ services:
     ports:
       - 80:80
     container_name: container_web
+  app:
+    build:
+      context: .
+      dockerfile: ./docker/local/app/Dockerfile
+    ports:
+      - 8080:8080
+    container_name: container_app
+    volumes:
+       - ./src:/var/www/html
     depends_on:
-      - app
-
-    
+      - web
+      
