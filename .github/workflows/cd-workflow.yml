@@ -38,7 +38,7 @@ jobs:
     - name: put production env
       env:
         PROD_ENV: ${{ secrets.LARAVEL_KEY }}
-      run: echo -e "${PROD_ENV}" > ./src/.env
+      run: echo -e "${PROD_ENV}" > ./src/laravel/.env
 
     - name: nginx push to ECR
       id: build-image-nginx
