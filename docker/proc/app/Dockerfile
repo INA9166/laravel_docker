@@ -30,8 +30,12 @@ RUN /bin/sh -c a2enmod rewrite
 ENV COMPOSER_ALLOW_SUPERUSER 1
 ENV COMPOSER_NO_INTERACTION 1
 
+COPY .env.example .env
+
 RUN composer install \
 && php artisan cache:clear \
 && php artisan config:clear \
 && php artisan route:clear \
-&& php artisan view:clear
+&& php artisan view:clear \
+&& php artisan key:generate
+
