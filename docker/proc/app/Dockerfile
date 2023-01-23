@@ -2,9 +2,10 @@ FROM php:8.1-apache
 
 ENV TZ Asia/Tokyo
 
-ADD ./docker/proc/app/php.ini /usr/local/etc/php/php.ini
-ADD ./docker/proc/app/default.conf /etc/apache2/sites-enabled/000-default.conf
-ADD ./src/laravel /var/www/html/laravel
+COPY ./docker/proc/app/php.ini /usr/local/etc/php/php.ini
+COPY ./docker/proc/app/default.conf /etc/apache2/sites-enabled/000-default.conf
+COPY ./src/laravel /var/www/html/laravel
+COPY ./src/laravel/.env.example /var/www/html/laravel/.env
 
 RUN cd /usr/bin && curl -s http://getcomposer.org/installer | php && ln -s /usr/bin/composer.phar /usr/bin/composer
 
@@ -29,8 +30,6 @@ RUN /bin/sh -c a2enmod rewrite
 
 ENV COMPOSER_ALLOW_SUPERUSER 1
 ENV COMPOSER_NO_INTERACTION 1
-
-COPY .env.example .env
 
 RUN composer install \
 && php artisan cache:clear \
