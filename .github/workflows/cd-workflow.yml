@@ -30,7 +30,14 @@ jobs:
     - uses: aws-actions/configure-aws-credentials@v1
       with:
         aws-region: ${{ env.AWS_REGION }}
-        role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/${{ secrets.IAM_ROLE_ARN }}
+        role-to-assume: ${{ secrets.IAM_ROLE_ARN }}
+
+    - name: Login to ECR
+      uses: docker/login-action@v1
+      env:
+        ECR_REGISTRY: ${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com
+      with:
+        registry: ${{ env.ECR_REGISTRY }}
 
     - name: nginx push to ECR
       id: build-image-nginx
