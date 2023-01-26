@@ -6,6 +6,10 @@ on:
       - main
     types: [closed]
 
+permissions:
+  id-token: write
+  contents: read
+
 env:
   AWS_REGION: ap-northeast-1
   ECS_WEB_SERVICE: aws-infra-ecs-service2
@@ -19,9 +23,6 @@ jobs:
     name: deploy
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    permissions:
-      id-token: write
-      contents: read
 
     steps:
     - name: Checkout
@@ -57,7 +58,4 @@ jobs:
         docker push $ECR_REGISTRY/$LARAVEL_CONTAINER_NAME:$LARAVEL_TAG
         docker push $ECR_REGISTRY/$LARAVEL_CONTAINER_NAME:latest
 
-    - name: Deploy to ECS
-      run: |
-        aws ecs update-service --service $ECS_WEB_SERVICE --cluster aws-infra-ecs-cluster --force-new-deployment
 
