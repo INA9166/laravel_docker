@@ -15,8 +15,8 @@ env:
   ECS_WEB_SERVICE: aws-infra-ecs-service2
   NGINX_CONTAINER_NAME: ecs-nginx
   LARAVEL_CONTAINER_NAME: ecs-laravel
-  NGINX_TAG: 1.0.1
-  LARAVEL_TAG: 1.0.1
+  NGINX_TAG: 1.0.2
+  LARAVEL_TAG: 1.0.2
 
 jobs:
   deploy:
