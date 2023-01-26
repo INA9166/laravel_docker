@@ -12,6 +12,7 @@ permissions:
 
 env:
   AWS_REGION: ap-northeast-1
+  ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
   ECS_WEB_SERVICE: aws-infra-ecs-service2
   NGINX_CONTAINER_NAME: ecs-nginx
   LARAVEL_CONTAINER_NAME: ecs-laravel
@@ -29,10 +30,10 @@ jobs:
       uses: actions/checkout@v3
 
     - name: Set up Dockder Buildx
-      uses: docker/setup-buildx-action@v1-node16
+      uses: docker/setup-buildx-action@v2
 
     - name: Cache docker
-      uses: actions/cache@v2-node16
+      uses: actions/cache@v3
       with:
         path: /tmp/.buildx-cache
         key: ${{ github.ref }}-buildx-${{ github.sha }}
@@ -54,23 +55,22 @@ jobs:
       uses: aws-actions/amazon-ecr-login@v1
 
     - name: nginx push to ECR
-      id: build-image-nginx
-      env:
-        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-      run: |
-        docker build -t $ECR_REGISTRY/$NGINX_CONTAINER_NAME:$NGINX_TAG -f ./docker/proc/web/Dockerfile .
-        docker tag $ECR_REGISTRY/$NGINX_CONTAINER_NAME:$NGINX_TAG $ECR_REGISTRY/$NGINX_CONTAINER_NAME:latest
-        docker push $ECR_REGISTRY/$NGINX_CONTAINER_NAME:$NGINX_TAG
-        docker push $ECR_REGISTRY/$NGINX_CONTAINER_NAME:latest
+      uses: docker/build-push-action@v2
+      with:
+        push: true
+        tags: $ECR_REGISTRY/$NGINX_CONTAINER_NAME:$NGINX_TAG
 
     - name: laravel push to ECR
-      id: build-image-laravel
-      env:
-        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+      uses: docker/build-push-action@v2
+      with:
+        push: true
+        tags: $ECR_REGISTRY/$LARAVEL_CONTAINER_NAME:$LARAVEL_TAG
+        cache-from: type=local,src=/tmp/.buildx-cache
+        cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
+
+    - name: Move cache
       run: |
-        docker build -t $ECR_REGISTRY/$LARAVEL_CONTAINER_NAME:$LARAVEL_TAG -f ./docker/proc/app/Dockerfile .
-        docker tag $ECR_REGISTRY/$LARAVEL_CONTAINER_NAME:$LARAVEL_TAG $ECR_REGISTRY/$LARAVEL_CONTAINER_NAME:latest
-        docker push $ECR_REGISTRY/$LARAVEL_CONTAINER_NAME:$LARAVEL_TAG
-        docker push $ECR_REGISTRY/$LARAVEL_CONTAINER_NAME:latest
+         rm -rf /tmp/.buildx-cache
+         mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
 
