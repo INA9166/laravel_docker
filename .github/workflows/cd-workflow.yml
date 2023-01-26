@@ -12,7 +12,6 @@ permissions:
 
 env:
   AWS_REGION: ap-northeast-1
-  ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
   ECS_WEB_SERVICE: aws-infra-ecs-service2
   NGINX_CONTAINER_NAME: ecs-nginx
   LARAVEL_CONTAINER_NAME: ecs-laravel
@@ -56,12 +55,16 @@ jobs:
 
     - name: nginx push to ECR
       uses: docker/build-push-action@v2
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
       with:
         push: true
         tags: $ECR_REGISTRY/$NGINX_CONTAINER_NAME:$NGINX_TAG
 
     - name: laravel push to ECR
       uses: docker/build-push-action@v2
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
       with:
         push: true
         tags: $ECR_REGISTRY/$LARAVEL_CONTAINER_NAME:$LARAVEL_TAG
