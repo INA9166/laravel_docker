@@ -15,8 +15,8 @@ env:
   ECS_WEB_SERVICE: aws-infra-ecs-service2
   NGINX_CONTAINER_NAME: ecs-nginx
   LARAVEL_CONTAINER_NAME: ecs-laravel
-  NGINX_TAG: 1.0.2
-  LARAVEL_TAG: 1.0.2
+  NGINX_TAG: 1.0.3
+  LARAVEL_TAG: 1.0.3
 
 jobs:
   deploy:
@@ -27,6 +27,21 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v3
+
+    - name: Set up Dockder Buildx
+      uses: docker/setup-buildx-action@v1
+
+    - name: Cache docker
+      uses: actions/cache@v2
+      with:
+        path: /tmp/.buildx-cache
+        key: ${{ github.ref }}-buildx-${{ github.sha }}
+        restore-keys: |
+          ${{ github.ref }}-buildx-
+
+    - run: echo ${{ github.ref }}
+
+    - run: echo ${{ github.sha }}
 
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v1-node16
@@ -45,6 +60,7 @@ jobs:
       run: |
         docker build -t $ECR_REGISTRY/$NGINX_CONTAINER_NAME:$NGINX_TAG -f ./docker/proc/web/Dockerfile .
         docker tag $ECR_REGISTRY/$NGINX_CONTAINER_NAME:$NGINX_TAG $ECR_REGISTRY/$NGINX_CONTAINER_NAME:latest
+        docker push $ECR_REGISTRY/$NGINX_CONTAINER_NAME:$NGINX_TAG
         docker push $ECR_REGISTRY/$NGINX_CONTAINER_NAME:latest
 
     - name: laravel push to ECR
@@ -54,6 +70,7 @@ jobs:
       run: |
         docker build -t $ECR_REGISTRY/$LARAVEL_CONTAINER_NAME:$LARAVEL_TAG -f ./docker/proc/app/Dockerfile .
         docker tag $ECR_REGISTRY/$LARAVEL_CONTAINER_NAME:$LARAVEL_TAG $ECR_REGISTRY/$LARAVEL_CONTAINER_NAME:latest
+        docker push $ECR_REGISTRY/$LARAVEL_CONTAINER_NAME:$LARAVEL_TAG
         docker push $ECR_REGISTRY/$LARAVEL_CONTAINER_NAME:latest
 
 
