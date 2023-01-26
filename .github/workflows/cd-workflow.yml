@@ -45,7 +45,6 @@ jobs:
       run: |
         docker build -t $ECR_REGISTRY/$NGINX_CONTAINER_NAME:$NGINX_TAG -f ./docker/proc/web/Dockerfile .
         docker tag $ECR_REGISTRY/$NGINX_CONTAINER_NAME:$NGINX_TAG $ECR_REGISTRY/$NGINX_CONTAINER_NAME:latest
-        docker push $ECR_REGISTRY/$NGINX_CONTAINER_NAME:$NGINX_TAG
         docker push $ECR_REGISTRY/$NGINX_CONTAINER_NAME:latest
 
     - name: laravel push to ECR
@@ -55,7 +54,6 @@ jobs:
       run: |
         docker build -t $ECR_REGISTRY/$LARAVEL_CONTAINER_NAME:$LARAVEL_TAG -f ./docker/proc/app/Dockerfile .
         docker tag $ECR_REGISTRY/$LARAVEL_CONTAINER_NAME:$LARAVEL_TAG $ECR_REGISTRY/$LARAVEL_CONTAINER_NAME:latest
-        docker push $ECR_REGISTRY/$LARAVEL_CONTAINER_NAME:$LARAVEL_TAG
         docker push $ECR_REGISTRY/$LARAVEL_CONTAINER_NAME:latest
 
 
