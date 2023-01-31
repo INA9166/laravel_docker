@@ -20,7 +20,10 @@ unzip \
 vim \
 default-mysql-client \
 libpng-dev \
-libpq-dev \
+libfreetype6-dev \
+libjpeg62-turbo-dev \
+&& docker-php-ext-configure gd --with-freetype --with-jpeg \
+&& docker-php-ext-install -j$(nproc) gd \
 && docker-php-ext-install pdo_mysql \
 && chmod 777 storage -R \
 && chmod 777 bootstrap/cache -R

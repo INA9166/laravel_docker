@@ -6,14 +6,14 @@ services:
       context: .
       dockerfile: ./docker/local/web/Dockerfile
     ports:
-      - 80:80
+      - 80:8070
     container_name: container_web
   app:
     build:
       context: .
       dockerfile: ./docker/local/app/Dockerfile
-    ports:
-      - 8080:80
+    expose:
+      - 8080
     container_name: container_app
     volumes:
        - ./src:/var/www/html
