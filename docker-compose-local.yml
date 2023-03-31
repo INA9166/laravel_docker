@@ -22,6 +22,9 @@ services:
       DB_DATABASE: test
       DB_USERNAME: test
       DB_PASSWORD: test
+      REDIS_HOST: container_redis
+      REDIS_PASSWORD:
+      REDIS_PORT: 6379
     volumes:
        - ./src:/var/www/html
   db:
@@ -39,3 +42,9 @@ services:
     volumes:
       - ./docker/local/db/data:/var/lib/mysql
       - ./docker/local/db/my.cnf:/etc/mysql/conf.d/my.cnf
+  redis:
+    image: redis:latest
+    ports:
+      - 6379:6379
+    container_name: container_redis
+
