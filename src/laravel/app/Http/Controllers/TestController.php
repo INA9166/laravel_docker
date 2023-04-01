@@ -3,28 +3,40 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Redis;
+use Auth;
 
-use App\Models\Models\ {
-    Users,
+use App\Models\ {
+    User,
 };
 
 class TestController extends Controller
 {
-    public function show(Request $request)
+    public function login(Request $request)
     {
-        echo '<html lang="ja">';
+        return view('login');
+    }
 
-        $user = Users::getOne('login1');
-        echo $user->name.'<br>';
+    public function loginAuth(Request $request)
+    {
+        $user = User::getOne($request->login_id);
+        if (empty($user)) return redirect('/');
 
-        //$request->session()->put('key', '名前2');
-        echo $request->session()->get('key').'<br>';
+        Auth::guard('web')->loginUsingId($user->id, false);
 
-        //Redis::set('name', 'John');
-        $name = Redis::get('name');
-        echo phpinfo().'<br>';
+        return redirect('/top?q=A');
+    }
 
-        echo '</html>';
+    public function top(Request $request)
+    {
+        $user = Auth::guard('web')->user();
+
+        return view('top', compact('user'));
+    }
+
+    public function logout(Request $request)
+    {
+        Auth::guard('web')->logout();
+
+        return redirect('/');
     }
 }

@@ -15,5 +15,11 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TestController;
 
 Route::controller(TestController::class)->group(function () {
-    Route::get('/', 'show');
+    Route::get('/', 'login')->name('login');
+    Route::post('/loginAuth', 'loginAuth');
+    Route::get('/logout', 'logout');
+
+    Route::group(['middleware' => 'auth:web'], function () {
+        Route::get('/top', 'top');
+    });
 });

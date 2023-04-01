@@ -41,4 +41,8 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public static function getOne($login_id) {
+        return self::where('login_id', $login_id)->first();
+    }
 }
