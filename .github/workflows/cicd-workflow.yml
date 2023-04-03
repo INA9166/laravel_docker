@@ -1,4 +1,4 @@
-name: ci work flow for Develop Amazon ECS
+name: cicd work flow for Develop Amazon ECS
 
 on:
   pull_request:
