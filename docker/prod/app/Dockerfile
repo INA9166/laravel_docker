@@ -1,10 +1,9 @@
-FROM php:8.1-apache
+FROM --platform=linux/x86_64 php:8.2.4-fpm-bullseye
 
 ENV TZ Asia/Tokyo
 
 COPY ./docker/prod/app/php.ini /usr/local/etc/php/php.ini
 COPY ./docker/prod/app/zz-docker.conf /usr/local/etc/php-fpm.d/zz-docker.conf
-COPY ./docker/prod/app/default.conf /etc/apache2/sites-enabled/000-default.conf
 COPY ./src/laravel /var/www/html/laravel
 COPY ./src/laravel/.env.example /var/www/html/laravel/.env
 
