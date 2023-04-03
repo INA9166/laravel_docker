@@ -12,11 +12,39 @@ services:
     build:
       context: .
       dockerfile: ./docker/local/app/Dockerfile
-    ports:
-      - 8080:80
+    expose:
+      - 9000
     container_name: container_app
+    environment:
+      DB_CONNECTION: mysql
+      DB_HOST: container_db
+      DB_PORT: 3306
+      DB_DATABASE: test
+      DB_USERNAME: test
+      DB_PASSWORD: test
+      REDIS_HOST: container_redis
+      REDIS_PASSWORD:
+      REDIS_PORT: 6379
     volumes:
        - ./src:/var/www/html
-    depends_on:
-      - web
-      
+  db:
+    image: mysql:8.0.27
+    ports:
+      - 3306:3306
+    container_name: container_db
+    environment:
+      MYSQL_ROOT_PASSWORD: test
+      MYSQL_DATABASE: test
+      MYSQL_USER: test
+      MYSQL_PASSWORD: test
+      TZ: 'Asia/Tokyo'
+    command: mysqld --character-set-server=utf8 --collation-server=utf8_bin
+    volumes:
+      - ./docker/local/db/data:/var/lib/mysql
+      - ./docker/local/db/my.cnf:/etc/mysql/conf.d/my.cnf
+  redis:
+    image: redis:latest
+    ports:
+      - 6379:6379
+    container_name: container_redis
+
