@@ -40,3 +40,4 @@ RUN composer install \
 && php artisan view:clear \
 && php artisan key:generate
 
+RUN apt-get remove --auto-remove SQLite3
