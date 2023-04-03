@@ -1,9 +1,9 @@
-name: Deploy work flow for Amazon ECS
+name: ci work flow for Develop Amazon ECS
 
 on:
   pull_request:
     branches:
-      - main
+      - develop
     types: [closed]
 
 permissions:
@@ -14,8 +14,8 @@ env:
   AWS_REGION: ap-northeast-1
   ECS_WEB_SERVICE: aws-infra-ecs-service2
   ECR_REGISTRY: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-northeast-1.amazonaws.com
-  ECR_NGINX_REPOSITORY: ecs-nginx
-  ECR_LARAVEL_REPOSITORY: ecs-laravel
+  ECR_NGINX_REPOSITORY: dev-web
+  ECR_LARAVEL_REPOSITORY: dev-app
 
 jobs:
   deploy:
@@ -60,8 +60,8 @@ jobs:
       with:
         provenance: false
         push: true
-        file: ./docker/proc/web/Dockerfile
-        tags: ${{ env.ECR_REGISTRY }}/${{ env.ECR_NGINX_REPOSITORY }}:${{ env.CURRENT_DATETIME }},${{ env.ECR_REGISTRY }}/${{ env.ECR_NGINX_REPOSITORY }}:latest
+        file: ./docker/prod/web/Dockerfile
+        tags: ${{ env.ECR_REGISTRY }}/${{ env.ECR_NGINX_REPOSITORY }}:${{ env.CURRENT_DATETIME }},${{ env.ECR_REGISTRY }}/${{ env.ECR_NGINX_REPOSITORY }}:dev
         cache-from: type=local,src=/tmp/.buildx-cache
         cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
 
@@ -70,8 +70,8 @@ jobs:
       with:
         provenance: false
         push: true
-        file: ./docker/proc/app/Dockerfile
-        tags: ${{ env.ECR_REGISTRY }}/${{ env.ECR_LARAVEL_REPOSITORY }}:${{ env.CURRENT_DATETIME }},${{ env.ECR_REGISTRY }}/${{ env.ECR_LARAVEL_REPOSITORY }}:latest
+        file: ./docker/prod/app/Dockerfile
+        tags: ${{ env.ECR_REGISTRY }}/${{ env.ECR_LARAVEL_REPOSITORY }}:${{ env.CURRENT_DATETIME }},${{ env.ECR_REGISTRY }}/${{ env.ECR_LARAVEL_REPOSITORY }}:dev
         cache-from: type=local,src=/tmp/.buildx-cache
         cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
 
