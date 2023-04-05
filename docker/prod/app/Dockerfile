@@ -1,9 +1,9 @@
-FROM php:8.1-apache
+FROM --platform=linux/x86_64 php:8.2.4-fpm-bullseye
 
 ENV TZ Asia/Tokyo
 
-COPY ./docker/proc/app/php.ini /usr/local/etc/php/php.ini
-COPY ./docker/proc/app/default.conf /etc/apache2/sites-enabled/000-default.conf
+COPY ./docker/prod/app/php.ini /usr/local/etc/php/php.ini
+COPY ./docker/prod/app/zz-docker.conf /usr/local/etc/php-fpm.d/zz-docker.conf
 COPY ./src/laravel /var/www/html/laravel
 COPY ./src/laravel/.env.example /var/www/html/laravel/.env
 
@@ -20,13 +20,15 @@ unzip \
 vim \
 default-mysql-client \
 libpng-dev \
-libpq-dev \
+libfreetype6-dev \
+libjpeg62-turbo-dev \
+&& docker-php-ext-configure gd --with-freetype --with-jpeg \
+&& docker-php-ext-install -j$(nproc) gd \
 && docker-php-ext-install pdo_mysql \
 && chmod 777 storage -R \
 && chmod 777 bootstrap/cache -R
 
-RUN mv /etc/apache2/mods-available/rewrite.load /etc/apache2/mods-enabled
-RUN /bin/sh -c a2enmod rewrite
+RUN git clone https://github.com/phpredis/phpredis.git /usr/src/php/ext/redis && docker-php-ext-install redis
 
 ENV COMPOSER_ALLOW_SUPERUSER 1
 ENV COMPOSER_NO_INTERACTION 1
@@ -37,4 +39,3 @@ RUN composer install \
 && php artisan route:clear \
 && php artisan view:clear \
 && php artisan key:generate
-
