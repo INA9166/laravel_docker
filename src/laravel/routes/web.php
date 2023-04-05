@@ -12,7 +12,14 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
+use App\Http\Controllers\TestController;
 
-Route::get('/', function () {
-    return view('welcome');
+Route::controller(TestController::class)->group(function () {
+    Route::get('/', 'login')->name('login');
+    Route::post('/loginAuth', 'loginAuth');
+    Route::get('/logout', 'logout');
+
+    Route::group(['middleware' => 'auth:web'], function () {
+        Route::get('/top', 'top');
+    });
 });
