@@ -43,7 +43,7 @@ jobs:
     - name: nginx pull from ECR
       run: docker pull ${{ env.ECR_REGISTRY }}/${{ env.ECR_NGINX_REPOSITORY }}:stg
     - name: nginx tag add ECR
-      run: docker tag ${{ env.ECR_REGISTRY }}/${{ env.ECR_NGINX_REPOSITORY }}:prd
+      run: docker tag ${{ env.ECR_REGISTRY }}/${{ env.ECR_NGINX_REPOSITORY }}:stg ${{ env.ECR_REGISTRY }}/${{ env.ECR_NGINX_REPOSITORY }}:prd
     - name: nginx push to ECR
       run: docker push ${{ env.ECR_REGISTRY }}/${{ env.ECR_NGINX_REPOSITORY }}:prd
 
