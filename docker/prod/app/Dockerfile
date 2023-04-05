@@ -39,5 +39,3 @@ RUN composer install \
 && php artisan route:clear \
 && php artisan view:clear \
 && php artisan key:generate
-
-RUN apt remove --purge sqlite3
