@@ -28,11 +28,6 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
 
-    - name: Set commit hash as env variable
-      env:
-        TZ: 'Asia/Tokyo'
-      run: echo "COMMIT_HASH=$(git rev-parse --verify HEAD)" >> $GITHUB_ENV
-
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v1-node16
       with:
@@ -46,17 +41,15 @@ jobs:
         registry: ${{ env.ECR_REGISTRY }}
 
     - name: nginx pull from ECR
-      run: docker pull ${{ env.ECR_REGISTRY }}/${{ env.ECR_NGINX_REPOSITORY }}:stg
+      run: docker pull ${{ env.ECR_REGISTRY }}/${{ env.ECR_NGINX_REPOSITORY }}:latest
     - name: nginx tag add ECR
-      run: docker tag ${{ env.ECR_REGISTRY }}/${{ env.ECR_NGINX_REPOSITORY }}:stg ${{ env.ECR_REGISTRY }}/${{ env.ECR_NGINX_REPOSITORY }}:prd
-    - name: nginx tag add ECR
-      run: docker tag ${{ env.ECR_REGISTRY }}/${{ env.ECR_NGINX_REPOSITORY }}:stg ${{ env.ECR_REGISTRY }}/${{ env.ECR_NGINX_REPOSITORY }}:${{ env.COMMIT_HASH }}
+      run: docker tag ${{ env.ECR_REGISTRY }}/${{ env.ECR_NGINX_REPOSITORY }}:latest ${{ env.ECR_REGISTRY }}/${{ env.ECR_NGINX_REPOSITORY }}:prd
     - name: nginx push to ECR
       run: docker push -a ${{ env.ECR_REGISTRY }}/${{ env.ECR_NGINX_REPOSITORY }}
 
     - name: laravel pull from ECR
-      run: docker pull ${{ env.ECR_REGISTRY }}/${{ env.ECR_LARAVEL_REPOSITORY }}:stg
+      run: docker pull ${{ env.ECR_REGISTRY }}/${{ env.ECR_LARAVEL_REPOSITORY }}:latest
     - name: laravel tag add ECR
-      run: docker tag ${{ env.ECR_REGISTRY }}/${{ env.ECR_LARAVEL_REPOSITORY }}:stg ${{ env.ECR_REGISTRY }}/${{ env.ECR_LARAVEL_REPOSITORY }}:prd
+      run: docker tag ${{ env.ECR_REGISTRY }}/${{ env.ECR_LARAVEL_REPOSITORY }}:latest ${{ env.ECR_REGISTRY }}/${{ env.ECR_LARAVEL_REPOSITORY }}:prd
     - name: laravel push to ECR
-      run: docker push ${{ env.ECR_REGISTRY }}/${{ env.ECR_LARAVEL_REPOSITORY }}:prd
+      run: docker push -a ${{ env.ECR_REGISTRY }}/${{ env.ECR_LARAVEL_REPOSITORY }}
