@@ -46,6 +46,7 @@ jobs:
       run: docker tag ${{ env.ECR_REGISTRY }}/${{ env.ECR_NGINX_REPOSITORY }}:stg ${{ env.ECR_REGISTRY }}/${{ env.ECR_NGINX_REPOSITORY }}:prd
     - name: nginx push to ECR
       run: docker push ${{ env.ECR_REGISTRY }}/${{ env.ECR_NGINX_REPOSITORY }}:prd
+    - name: nginx push to ECR
       run: docker push ${{ env.ECR_REGISTRY }}/${{ env.ECR_NGINX_REPOSITORY }}
 
     - name: laravel pull from ECR
@@ -54,4 +55,5 @@ jobs:
       run: docker tag ${{ env.ECR_REGISTRY }}/${{ env.ECR_LARAVEL_REPOSITORY }}:stg ${{ env.ECR_REGISTRY }}/${{ env.ECR_LARAVEL_REPOSITORY }}:prd
     - name: laravel push to ECR
       run: docker push ${{ env.ECR_REGISTRY }}/${{ env.ECR_LARAVEL_REPOSITORY }}:prd
+    - name: laravel push to ECR
       run: docker push ${{ env.ECR_REGISTRY }}/${{ env.ECR_LARAVEL_REPOSITORY }}
