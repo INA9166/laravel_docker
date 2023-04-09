@@ -38,7 +38,9 @@ jobs:
           composer install --dev
 
       - name: Run Larastan
-        run: ./vendor/bin/phpstan analyse --level=0 app config resources/views routes 
+        run: |
+          cd ./src/laravel
+          ./vendor/bin/phpstan analyse --level=0 app config resources/views routes 
 
   deploy:
     needs: larastan
