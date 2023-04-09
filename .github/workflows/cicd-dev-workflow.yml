@@ -39,8 +39,8 @@ jobs:
       - name: Run Larastan
         run: ./vendor/bin/phpstan analyse --level=0 app config resources/views routes 
 
-jobs:
   deploy:
+    needs: larastan
     name: deploy
     runs-on: ubuntu-latest
     if: github.event.pull_request.merged == true
