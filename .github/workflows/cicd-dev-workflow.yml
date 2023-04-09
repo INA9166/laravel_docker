@@ -34,7 +34,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          composer install --dev
+          composer install
 
       - name: Run Larastan
         run: ./vendor/bin/phpstan analyse --level=0 app config resources/views routes 
