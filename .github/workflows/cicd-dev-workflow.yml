@@ -34,6 +34,7 @@ jobs:
 
       - name: Install dependencies
         run: |
+          cd ./src/laravel
           composer install
 
       - name: Run Larastan
