@@ -40,7 +40,7 @@ jobs:
       - name: Run Larastan
         run: |
           cd ./src/laravel
-          ./vendor/bin/phpstan analyse --level=0 app config resources/views routes 
+          ./vendor/bin/phpstan analyse --memory-limit=2G --configuration=phpstan.neon
 
   deploy:
     needs: larastan
