@@ -33,7 +33,7 @@ RUN git clone https://github.com/phpredis/phpredis.git /usr/src/php/ext/redis &&
 ENV COMPOSER_ALLOW_SUPERUSER 1
 ENV COMPOSER_NO_INTERACTION 1
 
-RUN composer install \
+RUN composer install --no-dev \
 && php artisan cache:clear \
 && php artisan config:clear \
 && php artisan route:clear \

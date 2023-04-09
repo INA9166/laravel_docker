@@ -18,6 +18,28 @@ env:
   ECR_LARAVEL_REPOSITORY: dev-app
 
 jobs:
+  larastan:
+    name: static analysis
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true
+    timeout-minutes: 30
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+
+      - name: Install dependencies
+        run: |
+          composer install --dev
+
+      - name: Run Larastan
+        run: ./vendor/bin/phpstan analyse --level=0 app config resources/views routes 
+
+jobs:
   deploy:
     name: deploy
     runs-on: ubuntu-latest
