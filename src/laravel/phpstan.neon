@@ -1,0 +1,11 @@
+includes:
+    - ./vendor/nunomaduro/larastan/extension.neon
+parameters:
+    paths:
+        - app
+        - config
+        - resources/views
+        - routes
+    excludePaths:
+        - ./routes/console.php
+    level: 0
