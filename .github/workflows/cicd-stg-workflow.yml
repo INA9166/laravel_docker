@@ -57,7 +57,7 @@ jobs:
         registry: ${{ env.ECR_REGISTRY }}
 
     - name: nginx push to ECR
-      uses: docker/build-push-action@v3
+      uses: docker/build-push-action@v4
       with:
         provenance: false
         push: true
@@ -67,7 +67,7 @@ jobs:
         cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
 
     - name: laravel push to ECR
-      uses: docker/build-push-action@v3
+      uses: docker/build-push-action@v4
       with:
         provenance: false
         push: true

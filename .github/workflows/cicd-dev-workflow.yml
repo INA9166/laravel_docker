@@ -46,7 +46,6 @@ jobs:
     needs: larastan
     name: deploy
     runs-on: ubuntu-latest
-    if: github.event.pull_request.merged == true
     timeout-minutes: 30
 
     steps:
@@ -81,25 +80,35 @@ jobs:
       with:
         registry: ${{ env.ECR_REGISTRY }}
 
-    - name: nginx push to ECR
-      uses: docker/build-push-action@v3
+    - name: nginx build to ECR
+      uses: docker/build-push-action@v4
       with:
         provenance: false
-        push: true
+        push: false
         file: ./docker/prod/web/Dockerfile
         tags: ${{ env.ECR_REGISTRY }}/${{ env.ECR_NGINX_REPOSITORY }}:${{ env.CURRENT_DATETIME }},${{ env.ECR_REGISTRY }}/${{ env.ECR_NGINX_REPOSITORY }}:latest
         cache-from: type=local,src=/tmp/.buildx-cache
         cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
 
-    - name: laravel push to ECR
-      uses: docker/build-push-action@v3
+    - name: nginx push to ECR
+      run: |
+        docker push ${{ env.ECR_REGISTRY }}/${{ env.ECR_NGINX_REPOSITORY }}:${{ env.CURRENT_DATETIME }}
+        docker push ${{ env.ECR_REGISTRY }}/${{ env.ECR_NGINX_REPOSITORY }}:latest
+
+    - name: laravel build to ECR
+      uses: docker/build-push-action@v4
       with:
         provenance: false
-        push: true
+        push: false
         file: ./docker/prod/app/Dockerfile
         tags: ${{ env.ECR_REGISTRY }}/${{ env.ECR_LARAVEL_REPOSITORY }}:${{ env.CURRENT_DATETIME }},${{ env.ECR_REGISTRY }}/${{ env.ECR_LARAVEL_REPOSITORY }}:latest
         cache-from: type=local,src=/tmp/.buildx-cache
         cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
+
+    - name: laravel push to ECR
+      run: |
+        docker push ${{ env.ECR_REGISTRY }}/${{ env.ECR_LARAVEL_REPOSITORY }}:${{ env.CURRENT_DATETIME }}
+        docker push ${{ env.ECR_REGISTRY }}/${{ env.ECR_LARAVEL_REPOSITORY }}:latest
 
     - name: Move cache
       run: |
