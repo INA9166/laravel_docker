@@ -80,8 +80,8 @@ jobs:
       with:
         registry: ${{ env.ECR_REGISTRY }}
 
-    - name: nginx build to ECR
-      uses: docker/build-push-action@v3
+    - name: nginx build
+      uses: docker/build-push-action@v4
       with:
         provenance: false
         push: false
@@ -91,14 +91,11 @@ jobs:
         cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
 
     - name: nginx push to ECR
-      uses: docker/build-push-action@v3
-      with:
-        provenance: false
-        push: true
-        tags: ${{ env.ECR_REGISTRY }}/${{ env.ECR_NGINX_REPOSITORY }}:${{ env.CURRENT_DATETIME }},${{ env.ECR_REGISTRY }}/${{ env.ECR_NGINX_REPOSITORY }}:latest
+      run: |
+        docker push -a .io/library/${{ env.ECR_REGISTRY }}/${{ env.ECR_NGINX_PRD_REPOSITORY }}
 
-    - name: laravel build to ECR
-      uses: docker/build-push-action@v3
+    - name: laravel build
+      uses: docker/build-push-action@v4
       with:
         provenance: false
         push: false
@@ -108,12 +105,9 @@ jobs:
         cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
 
     - name: laravel push to ECR
-      uses: docker/build-push-action@v3
-      with:
-        provenance: false
-        push: false
-        tags: ${{ env.ECR_REGISTRY }}/${{ env.ECR_LARAVEL_REPOSITORY }}:${{ env.CURRENT_DATETIME }},${{ env.ECR_REGISTRY }}/${{ env.ECR_LARAVEL_REPOSITORY }}:latest
-  
+      run: |
+        docker push -a .io/library/${{ env.ECR_REGISTRY }}/${{ env.ECR_LARAVEL_REPOSITORY }}
+
     - name: Move cache
       run: |
          rm -rf /tmp/.buildx-cache
