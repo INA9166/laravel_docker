@@ -91,6 +91,13 @@ jobs:
         cache-from: type=local,src=/tmp/.buildx-cache
         cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
 
+    - name: nginx dockle
+       uses: erzz/dockle-action@v1
+	      with:
+	        image: ${{ env.ECR_REGISTRY }}/${{ env.ECR_NGINX_REPOSITORY }}:latest
+	        exit-code: 1
+	        failure-threshold: fatal
+
     - name: nginx push to ECR
       run: |
         docker push -a ${{ env.ECR_REGISTRY }}/${{ env.ECR_NGINX_REPOSITORY }}
@@ -105,6 +112,13 @@ jobs:
         tags: ${{ env.ECR_REGISTRY }}/${{ env.ECR_LARAVEL_REPOSITORY }}:${{ env.CURRENT_DATETIME }},${{ env.ECR_REGISTRY }}/${{ env.ECR_LARAVEL_REPOSITORY }}:latest
         cache-from: type=local,src=/tmp/.buildx-cache
         cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
+
+    - name: laravel dockle
+       uses: erzz/dockle-action@v1
+	      with:
+	        image: ${{ env.ECR_REGISTRY }}/${{ env.ECR_LARAVEL_REPOSITORY }}:latest
+	        exit-code: 1
+	        failure-threshold: fatal
 
     - name: laravel push to ECR
       run: |
