@@ -85,8 +85,9 @@ jobs:
       with:
         provenance: false
         push: false
+        load: true
         file: ./docker/prod/web/Dockerfile
-        tags: ${{ env.CURRENT_DATETIME }},latest
+        tags: ${{ env.ECR_REGISTRY }}/${{ env.ECR_NGINX_REPOSITORY }}:${{ env.CURRENT_DATETIME }},${{ env.ECR_REGISTRY }}/${{ env.ECR_NGINX_REPOSITORY }}:latest
         cache-from: type=local,src=/tmp/.buildx-cache
         cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
 
