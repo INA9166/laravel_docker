@@ -92,7 +92,7 @@ jobs:
 
     - name: nginx push to ECR
       run: |
-        docker push -a .io/library/${{ env.ECR_REGISTRY }}/${{ env.ECR_NGINX_PRD_REPOSITORY }}
+        docker push -a ${{ env.ECR_REGISTRY }}/${{ env.ECR_NGINX_PRD_REPOSITORY }}
 
     - name: laravel build
       uses: docker/build-push-action@v4
@@ -106,7 +106,7 @@ jobs:
 
     - name: laravel push to ECR
       run: |
-        docker push -a .io/library/${{ env.ECR_REGISTRY }}/${{ env.ECR_LARAVEL_REPOSITORY }}
+        docker push -a ${{ env.ECR_REGISTRY }}/${{ env.ECR_LARAVEL_REPOSITORY }}
 
     - name: Move cache
       run: |
