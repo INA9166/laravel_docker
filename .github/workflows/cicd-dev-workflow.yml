@@ -81,33 +81,39 @@ jobs:
         registry: ${{ env.ECR_REGISTRY }}
 
     - name: nginx build to ECR
-      uses: docker/build-push-action@v4
+      uses: docker/build-push-action@v3
       with:
         provenance: false
         push: false
         file: ./docker/prod/web/Dockerfile
-        tags: ${{ env.CURRENT_DATETIME }},latest
+        tags: ${{ env.ECR_REGISTRY }}/${{ env.ECR_NGINX_REPOSITORY }}:${{ env.CURRENT_DATETIME }},${{ env.ECR_REGISTRY }}/${{ env.ECR_NGINX_REPOSITORY }}:latest
         cache-from: type=local,src=/tmp/.buildx-cache
         cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
 
     - name: nginx push to ECR
-      run: |
-        docker push -a ${{ env.ECR_REGISTRY }}/${{ env.ECR_NGINX_REPOSITORY }}
+      uses: docker/build-push-action@v3
+      with:
+        provenance: false
+        push: true
+        tags: ${{ env.ECR_REGISTRY }}/${{ env.ECR_NGINX_REPOSITORY }}:${{ env.CURRENT_DATETIME }},${{ env.ECR_REGISTRY }}/${{ env.ECR_NGINX_REPOSITORY }}:latest
 
     - name: laravel build to ECR
-      uses: docker/build-push-action@v4
+      uses: docker/build-push-action@v3
       with:
         provenance: false
         push: false
         file: ./docker/prod/app/Dockerfile
-        tags: ${{ env.CURRENT_DATETIME }},latest
+        tags: ${{ env.ECR_REGISTRY }}/${{ env.ECR_LARAVEL_REPOSITORY }}:${{ env.CURRENT_DATETIME }},${{ env.ECR_REGISTRY }}/${{ env.ECR_LARAVEL_REPOSITORY }}:latest
         cache-from: type=local,src=/tmp/.buildx-cache
         cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
 
     - name: laravel push to ECR
-      run: |
-        docker push -a ${{ env.ECR_REGISTRY }}/${{ env.ECR_LARAVEL_REPOSITORY }}
-
+      uses: docker/build-push-action@v3
+      with:
+        provenance: false
+        push: false
+        tags: ${{ env.ECR_REGISTRY }}/${{ env.ECR_LARAVEL_REPOSITORY }}:${{ env.CURRENT_DATETIME }},${{ env.ECR_REGISTRY }}/${{ env.ECR_LARAVEL_REPOSITORY }}:latest
+  
     - name: Move cache
       run: |
          rm -rf /tmp/.buildx-cache
