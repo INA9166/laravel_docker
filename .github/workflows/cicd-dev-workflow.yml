@@ -84,6 +84,7 @@ jobs:
       uses: docker/build-push-action@v4
       with:
         provenance: false
+        context: .
         push: false
         file: ./docker/prod/web/Dockerfile
         tags: ${{ env.ECR_REGISTRY }}/${{ env.ECR_NGINX_REPOSITORY }}:${{ env.CURRENT_DATETIME }},${{ env.ECR_REGISTRY }}/${{ env.ECR_NGINX_REPOSITORY }}:latest
@@ -99,6 +100,7 @@ jobs:
       uses: docker/build-push-action@v4
       with:
         provenance: false
+        context: .
         push: false
         file: ./docker/prod/app/Dockerfile
         tags: ${{ env.ECR_REGISTRY }}/${{ env.ECR_LARAVEL_REPOSITORY }}:${{ env.CURRENT_DATETIME }},${{ env.ECR_REGISTRY }}/${{ env.ECR_LARAVEL_REPOSITORY }}:latest
