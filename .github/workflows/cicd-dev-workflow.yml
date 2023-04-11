@@ -84,33 +84,29 @@ jobs:
       uses: docker/build-push-action@v4
       with:
         provenance: false
-        context: .
         push: false
         file: ./docker/prod/web/Dockerfile
-        tags: ${{ env.ECR_REGISTRY }}/${{ env.ECR_NGINX_REPOSITORY }}:${{ env.CURRENT_DATETIME }},${{ env.ECR_REGISTRY }}/${{ env.ECR_NGINX_REPOSITORY }}:latest
+        tags: ${{ env.CURRENT_DATETIME }},latest
         cache-from: type=local,src=/tmp/.buildx-cache
         cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
 
     - name: nginx push to ECR
       run: |
-        docker push ${{ env.ECR_REGISTRY }}/${{ env.ECR_NGINX_REPOSITORY }}:${{ env.CURRENT_DATETIME }}
-        docker push ${{ env.ECR_REGISTRY }}/${{ env.ECR_NGINX_REPOSITORY }}:latest
+        docker push -a ${{ env.ECR_REGISTRY }}/${{ env.ECR_NGINX_REPOSITORY }}
 
     - name: laravel build to ECR
       uses: docker/build-push-action@v4
       with:
         provenance: false
-        context: .
         push: false
         file: ./docker/prod/app/Dockerfile
-        tags: ${{ env.ECR_REGISTRY }}/${{ env.ECR_LARAVEL_REPOSITORY }}:${{ env.CURRENT_DATETIME }},${{ env.ECR_REGISTRY }}/${{ env.ECR_LARAVEL_REPOSITORY }}:latest
+        tags: ${{ env.CURRENT_DATETIME }},latest
         cache-from: type=local,src=/tmp/.buildx-cache
         cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
 
     - name: laravel push to ECR
       run: |
-        docker push ${{ env.ECR_REGISTRY }}/${{ env.ECR_LARAVEL_REPOSITORY }}:${{ env.CURRENT_DATETIME }}
-        docker push ${{ env.ECR_REGISTRY }}/${{ env.ECR_LARAVEL_REPOSITORY }}:latest
+        docker push -a ${{ env.ECR_REGISTRY }}/${{ env.ECR_LARAVEL_REPOSITORY }}
 
     - name: Move cache
       run: |
