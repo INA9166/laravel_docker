@@ -1,7 +1,6 @@
 FROM --platform=linux/x86_64 php:8.2.4-fpm-bullseye
 
 ENV TZ Asia/Tokyo
-ENV DOCKER_CONTENT_TRUST 1
 
 COPY ./docker/prod/app/php.ini /usr/local/etc/php/php.ini
 COPY ./docker/prod/app/zz-docker.conf /usr/local/etc/php-fpm.d/zz-docker.conf
@@ -23,13 +22,12 @@ default-mysql-client \
 libpng-dev \
 libfreetype6-dev \
 libjpeg62-turbo-dev \
+&& rm -rf /var/lib/apt/lists/* \
 && docker-php-ext-configure gd --with-freetype --with-jpeg \
 && docker-php-ext-install -j$(nproc) gd \
 && docker-php-ext-install pdo_mysql \
 && chmod 777 storage -R \
 && chmod 777 bootstrap/cache -R
-
-RUN rm -rf /var/lib/apt/lists
 
 RUN git clone https://github.com/phpredis/phpredis.git /usr/src/php/ext/redis && docker-php-ext-install redis
 
