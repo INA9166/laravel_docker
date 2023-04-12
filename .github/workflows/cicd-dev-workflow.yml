@@ -94,8 +94,6 @@ jobs:
 
     - name: nginx dockle
       uses: erzz/dockle-action@v1
-      env:
-        IGNORE: DKL-DI-0006
       with:
         image: ${{ env.ECR_REGISTRY }}/${{ env.ECR_NGINX_REPOSITORY }}:latest
         exit-code: 1
@@ -119,8 +117,6 @@ jobs:
 
     - name: laravel dockle
       uses: erzz/dockle-action@v1
-      env:
-        IGNORE: DKL-DI-0006
       with:
         image: ${{ env.ECR_REGISTRY }}/${{ env.ECR_LARAVEL_REPOSITORY }}:latest
         exit-code: 1
