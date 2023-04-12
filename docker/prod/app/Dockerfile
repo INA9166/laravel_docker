@@ -40,3 +40,18 @@ RUN composer install --no-dev \
 && php artisan route:clear \
 && php artisan view:clear \
 && php artisan key:generate
+
+RUN rm -rf /usr/bin/chage \
+/usr/bin/ssh-agent \
+/usr/lib/openssh/ssh-keysign \
+/usr/bin/expiry \
+/bin/mount \
+/usr/bin/chsh \
+/usr/bin/wall \
+/usr/bin/gpasswd \
+/bin/su \
+/usr/bin/passwd \
+/usr/bin/chfn \
+/usr/bin/newgrp \
+/sbin/unix_chkpwd \
+/bin/umount
