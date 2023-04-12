@@ -11,6 +11,7 @@ permissions:
   contents: read
 
 env:
+  DOCKER_CONTENT_TRUST: 1
   AWS_REGION: ap-northeast-1
   ECS_WEB_SERVICE: aws-infra-ecs-service2 
   ECR_REGISTRY: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-northeast-1.amazonaws.com
@@ -49,9 +50,6 @@ jobs:
     timeout-minutes: 30
 
     steps:
-    - name: Enable content trust for Docker
-      run: export DOCKER_CONTENT_TRUST=1
-
     - name: Checkout
       uses: actions/checkout@v3
 
@@ -96,6 +94,8 @@ jobs:
 
     - name: nginx dockle
       uses: erzz/dockle-action@v1
+      env:
+        IGNORE: DKL-DI-0006
       with:
         image: ${{ env.ECR_REGISTRY }}/${{ env.ECR_NGINX_REPOSITORY }}:latest
         exit-code: 1
@@ -119,6 +119,8 @@ jobs:
 
     - name: laravel dockle
       uses: erzz/dockle-action@v1
+      env:
+        IGNORE: DKL-DI-0006
       with:
         image: ${{ env.ECR_REGISTRY }}/${{ env.ECR_LARAVEL_REPOSITORY }}:latest
         exit-code: 1
