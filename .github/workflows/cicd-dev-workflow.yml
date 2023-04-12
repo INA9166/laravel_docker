@@ -97,7 +97,7 @@ jobs:
         image: ${{ env.ECR_REGISTRY }}/${{ env.ECR_NGINX_REPOSITORY }}:latest
         exit-code: 1
         failure-threshold: fatal
-        accept-keywords: NGINX_GPGKEY
+        accept-keywords: NGINX_GPGKEY,NGINX_GPGKEY_PATH
 
     - name: nginx push to ECR
       run: |
