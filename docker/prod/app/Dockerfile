@@ -1,7 +1,7 @@
 FROM --platform=linux/x86_64 php:8.2.4-fpm-bullseye
 
 ENV TZ Asia/Tokyo
-ENV DOCKER_CONTENT_TRUST=1
+ENV DOCKER_CONTENT_TRUST 1
 
 COPY ./docker/prod/app/php.ini /usr/local/etc/php/php.ini
 COPY ./docker/prod/app/zz-docker.conf /usr/local/etc/php-fpm.d/zz-docker.conf
@@ -12,8 +12,6 @@ RUN cd /usr/bin && curl -s http://getcomposer.org/installer | php && ln -s /usr/
 
 # 作業ディレクトリを変更
 WORKDIR /var/www/html/laravel
-
-RUN rm -rf /var/lib/apt/lists
 
 RUN apt-get update \
 && apt-get install -y \
@@ -30,6 +28,8 @@ libjpeg62-turbo-dev \
 && docker-php-ext-install pdo_mysql \
 && chmod 777 storage -R \
 && chmod 777 bootstrap/cache -R
+
+RUN rm -rf /var/lib/apt/lists
 
 RUN git clone https://github.com/phpredis/phpredis.git /usr/src/php/ext/redis && docker-php-ext-install redis
 
