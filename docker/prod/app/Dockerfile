@@ -41,17 +41,17 @@ RUN composer install --no-dev \
 && php artisan view:clear \
 && php artisan key:generate
 
-RUN rm -rf /usr/bin/chage \
-/usr/bin/ssh-agent \
-/usr/lib/openssh/ssh-keysign \
-/usr/bin/expiry \
-/bin/mount \
-/usr/bin/chsh \
-/usr/bin/wall \
-/usr/bin/gpasswd \
-/bin/su \
-/usr/bin/passwd \
-/usr/bin/chfn \
-/usr/bin/newgrp \
-/sbin/unix_chkpwd \
-/bin/umount
+RUN chmod u-s /usr/bin/newgrp && \
+chmod u-s /usr/bin/passwd && \
+chmod u-s /usr/bin/gpasswd && \
+chmod u-s /bin/mount && \
+chmod u-s /bin/umount && \
+chmod u-s /bin/su && \
+chmod u-s /usr/bin/chfn && \
+chmod u-s /usr/bin/chsh && \
+chmod u-s /usr/lib/openssh/ssh-keysign && \
+chmod g-s /usr/bin/chage && \
+chmod g-s /usr/bin/wall && \
+chmod g-s /sbin/unix_chkpwd && \
+chmod g-s /usr/bin/expiry && \
+chmod g-s /usr/bin/ssh-agent
