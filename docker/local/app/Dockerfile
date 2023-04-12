@@ -26,3 +26,18 @@ libjpeg62-turbo-dev \
 && docker-php-ext-install pdo_mysql
 
 RUN git clone https://github.com/phpredis/phpredis.git /usr/src/php/ext/redis && docker-php-ext-install redis
+
+RUN rm -rf /usr/bin/chage \
+/usr/bin/ssh-agent \
+/usr/lib/openssh/ssh-keysign \
+/usr/bin/expiry \
+/bin/mount \
+/usr/bin/chsh \
+/usr/bin/wall \
+/usr/bin/gpasswd \
+/bin/su \
+/usr/bin/passwd \
+/usr/bin/chfn \
+/usr/bin/newgrp \
+/sbin/unix_chkpwd \
+/bin/umount
