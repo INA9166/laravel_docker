@@ -15,8 +15,8 @@ env:
   AWS_REGION: ap-northeast-1
   ECS_WEB_SERVICE: aws-infra-ecs-service2 
   ECR_REGISTRY: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-northeast-1.amazonaws.com
-  ECR_NGINX_REPOSITORY: stg-web
-  ECR_LARAVEL_REPOSITORY: stg-app
+  ECR_WEB_REPOSITORY: stg-web
+  ECR_APP_REPOSITORY: stg-app
 
 jobs:
   deploy:
@@ -57,23 +57,23 @@ jobs:
       with:
         registry: ${{ env.ECR_REGISTRY }}
 
-    - name: nginx push to ECR
+    - name: web push to ECR
       uses: docker/build-push-action@v4
       with:
         provenance: false
         push: true
         file: ./docker/prod/web/Dockerfile
-        tags: ${{ env.ECR_REGISTRY }}/${{ env.ECR_NGINX_REPOSITORY }}:${{ env.CURRENT_DATETIME }},${{ env.ECR_REGISTRY }}/${{ env.ECR_NGINX_REPOSITORY }}:latest
+        tags: ${{ env.ECR_REGISTRY }}/${{ env.ECR_WEB_REPOSITORY }}:${{ env.CURRENT_DATETIME }},${{ env.ECR_REGISTRY }}/${{ env.ECR_WEB_REPOSITORY }}:stg
         cache-from: type=local,src=/tmp/.buildx-cache
         cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
 
-    - name: laravel push to ECR
+    - name: app push to ECR
       uses: docker/build-push-action@v4
       with:
         provenance: false
         push: true
         file: ./docker/prod/app/Dockerfile
-        tags: ${{ env.ECR_REGISTRY }}/${{ env.ECR_LARAVEL_REPOSITORY }}:${{ env.CURRENT_DATETIME }},${{ env.ECR_REGISTRY }}/${{ env.ECR_LARAVEL_REPOSITORY }}:latest
+        tags: ${{ env.ECR_REGISTRY }}/${{ env.ECR_APP_REPOSITORY }}:${{ env.CURRENT_DATETIME }},${{ env.ECR_REGISTRY }}/${{ env.ECR_APP_REPOSITORY }}:stg
         cache-from: type=local,src=/tmp/.buildx-cache
         cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
 

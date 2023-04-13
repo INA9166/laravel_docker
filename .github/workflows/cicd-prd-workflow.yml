@@ -15,10 +15,10 @@ env:
   AWS_REGION: ap-northeast-1
   ECS_WEB_SERVICE: aws-infra-ecs-service2 
   ECR_REGISTRY: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-northeast-1.amazonaws.com
-  ECR_NGINX_STG_REPOSITORY: stg-web
-  ECR_NGINX_PRD_REPOSITORY: prd-web
-  ECR_LARAVEL_STG_REPOSITORY: stg-app
-  ECR_LARAVEL_PRD_REPOSITORY: prd-app
+  ECR_WEB_STG_REPOSITORY: stg-web
+  ECR_WEB_PRD_REPOSITORY: prd-web
+  ECR_APP_STG_REPOSITORY: stg-app
+  ECR_APP_PRD_REPOSITORY: prd-app
 
 jobs:
   deploy:
@@ -48,20 +48,20 @@ jobs:
       with:
         registry: ${{ env.ECR_REGISTRY }}
 
-    - name: nginx pull from stg ECR
-      run: docker pull ${{ env.ECR_REGISTRY }}/${{ env.ECR_NGINX_STG_REPOSITORY }}:latest
-    - name: nginx current datetime tag add image
-      run: docker tag ${{ env.ECR_REGISTRY }}/${{ env.ECR_NGINX_STG_REPOSITORY }}:latest ${{ env.ECR_REGISTRY }}/${{ env.ECR_NGINX_PRD_REPOSITORY }}:${{ env.CURRENT_DATETIME }}
-    - name: nginx latest tag add image
-      run: docker tag ${{ env.ECR_REGISTRY }}/${{ env.ECR_NGINX_STG_REPOSITORY }}:latest ${{ env.ECR_REGISTRY }}/${{ env.ECR_NGINX_PRD_REPOSITORY }}:latest
-    - name: nginx push to prd ECR
-      run: docker push -a ${{ env.ECR_REGISTRY }}/${{ env.ECR_NGINX_PRD_REPOSITORY }}
+    - name: web pull from stg ECR
+      run: docker pull ${{ env.ECR_REGISTRY }}/${{ env.ECR_WEB_STG_REPOSITORY }}:stg
+    - name: web current datetime tag add image
+      run: docker tag ${{ env.ECR_REGISTRY }}/${{ env.ECR_WEB_STG_REPOSITORY }}:stg ${{ env.ECR_REGISTRY }}/${{ env.ECR_WEB_PRD_REPOSITORY }}:${{ env.CURRENT_DATETIME }}
+    - name: web prd tag add image
+      run: docker tag ${{ env.ECR_REGISTRY }}/${{ env.ECR_WEB_STG_REPOSITORY }}:stg ${{ env.ECR_REGISTRY }}/${{ env.ECR_WEB_PRD_REPOSITORY }}:prd
+    - name: web push to prd ECR
+      run: docker push -a ${{ env.ECR_REGISTRY }}/${{ env.ECR_WEB_PRD_REPOSITORY }}
 
-    - name: laravel pull from stg ECR
-      run: docker pull ${{ env.ECR_REGISTRY }}/${{ env.ECR_LARAVEL_STG_REPOSITORY }}:latest
-    - name: laravel current datetime tag add image
-      run: docker tag ${{ env.ECR_REGISTRY }}/${{ env.ECR_LARAVEL_STG_REPOSITORY }}:latest ${{ env.ECR_REGISTRY }}/${{ env.ECR_LARAVEL_PRD_REPOSITORY }}:${{ env.CURRENT_DATETIME }}
-    - name: laravel latest tag add image
-      run: docker tag ${{ env.ECR_REGISTRY }}/${{ env.ECR_LARAVEL_STG_REPOSITORY }}:latest ${{ env.ECR_REGISTRY }}/${{ env.ECR_LARAVEL_PRD_REPOSITORY }}:latest
-    - name: laravel push to prd ECR
-      run: docker push -a ${{ env.ECR_REGISTRY }}/${{ env.ECR_LARAVEL_PRD_REPOSITORY }}
+    - name: app pull from stg ECR
+      run: docker pull ${{ env.ECR_REGISTRY }}/${{ env.ECR_APP_STG_REPOSITORY }}:stg
+    - name: app current datetime tag add image
+      run: docker tag ${{ env.ECR_REGISTRY }}/${{ env.ECR_APP_STG_REPOSITORY }}:stg ${{ env.ECR_REGISTRY }}/${{ env.ECR_APP_PRD_REPOSITORY }}:${{ env.CURRENT_DATETIME }}
+    - name: app prd tag add image
+      run: docker tag ${{ env.ECR_REGISTRY }}/${{ env.ECR_APP_STG_REPOSITORY }}:stg ${{ env.ECR_REGISTRY }}/${{ env.ECR_APP_PRD_REPOSITORY }}:prd
+    - name: app push to prd ECR
+      run: docker push -a ${{ env.ECR_REGISTRY }}/${{ env.ECR_APP_PRD_REPOSITORY }}
