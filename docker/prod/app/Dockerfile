@@ -22,13 +22,15 @@ default-mysql-client \
 libpng-dev \
 libfreetype6-dev \
 libjpeg62-turbo-dev \
+&& rm -rf /var/lib/apt/lists/* \
 && docker-php-ext-configure gd --with-freetype --with-jpeg \
 && docker-php-ext-install -j$(nproc) gd \
 && docker-php-ext-install pdo_mysql \
 && chmod 777 storage -R \
 && chmod 777 bootstrap/cache -R
 
-RUN git clone https://github.com/phpredis/phpredis.git /usr/src/php/ext/redis && docker-php-ext-install redis
+RUN git clone --depth 1 https://github.com/phpredis/phpredis.git /usr/src/php/ext/redis && docker-php-ext-install redis
+RUN rm -rf /usr/src/php/ext/redis/.git
 
 ENV COMPOSER_ALLOW_SUPERUSER 1
 ENV COMPOSER_NO_INTERACTION 1
@@ -39,3 +41,22 @@ RUN composer install --no-dev \
 && php artisan route:clear \
 && php artisan view:clear \
 && php artisan key:generate
+
+RUN groupadd -r appgroup && useradd -r -g appgroup appuser
+
+RUN chmod u-s /usr/bin/newgrp && \
+chmod u-s /usr/bin/passwd && \
+chmod u-s /usr/bin/gpasswd && \
+chmod u-s /bin/mount && \
+chmod u-s /bin/umount && \
+chmod u-s /bin/su && \
+chmod u-s /usr/bin/chfn && \
+chmod u-s /usr/bin/chsh && \
+chmod u-s /usr/lib/openssh/ssh-keysign && \
+chmod g-s /usr/bin/chage && \
+chmod g-s /usr/bin/wall && \
+chmod g-s /sbin/unix_chkpwd && \
+chmod g-s /usr/bin/expiry && \
+chmod g-s /usr/bin/ssh-agent
+
+USER appuser

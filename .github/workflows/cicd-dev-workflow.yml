@@ -11,11 +11,12 @@ permissions:
   contents: read
 
 env:
+  DOCKER_CONTENT_TRUST: 1
   AWS_REGION: ap-northeast-1
   ECS_WEB_SERVICE: aws-infra-ecs-service2 
   ECR_REGISTRY: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-northeast-1.amazonaws.com
-  ECR_NGINX_REPOSITORY: dev-web
-  ECR_LARAVEL_REPOSITORY: dev-app
+  ECR_WEB_REPOSITORY: dev-web
+  ECR_APP_REPOSITORY: dev-app
 
 jobs:
   larastan:
@@ -46,7 +47,6 @@ jobs:
     needs: larastan
     name: deploy
     runs-on: ubuntu-latest
-    if: github.event.pull_request.merged == true
     timeout-minutes: 30
 
     steps:
@@ -81,25 +81,50 @@ jobs:
       with:
         registry: ${{ env.ECR_REGISTRY }}
 
-    - name: nginx push to ECR
-      uses: docker/build-push-action@v3
+    - name: web build
+      uses: docker/build-push-action@v4
       with:
         provenance: false
-        push: true
+        push: false
+        load: true
         file: ./docker/prod/web/Dockerfile
-        tags: ${{ env.ECR_REGISTRY }}/${{ env.ECR_NGINX_REPOSITORY }}:${{ env.CURRENT_DATETIME }},${{ env.ECR_REGISTRY }}/${{ env.ECR_NGINX_REPOSITORY }}:latest
+        tags: ${{ env.ECR_REGISTRY }}/${{ env.ECR_WEB_REPOSITORY }}:${{ env.CURRENT_DATETIME }},${{ env.ECR_REGISTRY }}/${{ env.ECR_WEB_REPOSITORY }}:dev
         cache-from: type=local,src=/tmp/.buildx-cache
         cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
 
-    - name: laravel push to ECR
-      uses: docker/build-push-action@v3
+    - name: web dockle
+      uses: erzz/dockle-action@v1
+      with:
+        image: ${{ env.ECR_REGISTRY }}/${{ env.ECR_WEB_REPOSITORY }}:dev
+        exit-code: 1
+        failure-threshold: fatal
+        accept-keywords: NGINX_GPGKEY,NGINX_GPGKEY_PATH
+
+    - name: web push to ECR
+      run: |
+        docker push -a ${{ env.ECR_REGISTRY }}/${{ env.ECR_WEB_REPOSITORY }}
+
+    - name: app build
+      uses: docker/build-push-action@v4
       with:
         provenance: false
-        push: true
+        push: false
+        load: true
         file: ./docker/prod/app/Dockerfile
-        tags: ${{ env.ECR_REGISTRY }}/${{ env.ECR_LARAVEL_REPOSITORY }}:${{ env.CURRENT_DATETIME }},${{ env.ECR_REGISTRY }}/${{ env.ECR_LARAVEL_REPOSITORY }}:latest
+        tags: ${{ env.ECR_REGISTRY }}/${{ env.ECR_APP_REPOSITORY }}:${{ env.CURRENT_DATETIME }},${{ env.ECR_REGISTRY }}/${{ env.ECR_APP_REPOSITORY }}:dev
         cache-from: type=local,src=/tmp/.buildx-cache
         cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
+
+    - name: app dockle
+      uses: erzz/dockle-action@v1
+      with:
+        image: ${{ env.ECR_REGISTRY }}/${{ env.ECR_APP_REPOSITORY }}:dev
+        exit-code: 1
+        failure-threshold: fatal
+
+    - name: app push to ECR
+      run: |
+        docker push -a ${{ env.ECR_REGISTRY }}/${{ env.ECR_APP_REPOSITORY }}
 
     - name: Move cache
       run: |
