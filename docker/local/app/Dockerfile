@@ -27,6 +27,8 @@ libjpeg62-turbo-dev \
 
 RUN git clone https://github.com/phpredis/phpredis.git /usr/src/php/ext/redis && docker-php-ext-install redis
 
+RUN groupadd -r appgroup && useradd -r -g appgroup appuser
+
 RUN chmod u-s /usr/bin/newgrp && \
 chmod u-s /usr/bin/passwd && \
 chmod u-s /usr/bin/gpasswd && \
@@ -41,3 +43,5 @@ chmod g-s /usr/bin/wall && \
 chmod g-s /sbin/unix_chkpwd && \
 chmod g-s /usr/bin/expiry && \
 chmod g-s /usr/bin/ssh-agent
+
+USER appuser
