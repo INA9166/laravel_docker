@@ -46,6 +46,11 @@
         ],
         "post-create-project-cmd": [
             "@php artisan key:generate --ansi"
+        ],
+        "post-install-cmd": [
+            "rm -rf vendor/league/flysystem/docker-compose.yml",
+            "rm -rf vendor/nunomaduro/termwind/docker-compose.yml",
+            "rm -rf vendor/nunomaduro/termwind/docker/Dockerfile"
         ]
     },
     "extra": {
