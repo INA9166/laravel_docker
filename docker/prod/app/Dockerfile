@@ -30,6 +30,7 @@ libjpeg62-turbo-dev \
 && chmod 777 bootstrap/cache -R
 
 RUN git clone --depth 1 https://github.com/phpredis/phpredis.git /usr/src/php/ext/redis && docker-php-ext-install redis
+RUN rm -rf /usr/src/php/ext/redis/.git
 
 ENV COMPOSER_ALLOW_SUPERUSER 1
 ENV COMPOSER_NO_INTERACTION 1
