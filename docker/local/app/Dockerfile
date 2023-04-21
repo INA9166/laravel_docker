@@ -2,8 +2,8 @@ FROM --platform=linux/x86_64 php:8.2.4-fpm-bullseye
 
 ENV TZ Asia/Tokyo
 
-ADD ./docker/local/app/php.ini /usr/local/etc/php/php.ini
-ADD ./docker/local/app/zz-docker.conf /usr/local/etc/php-fpm.d/zz-docker.conf
+COPY ./docker/local/app/php.ini /usr/local/etc/php/php.ini
+COPY ./docker/local/app/zz-docker.conf /usr/local/etc/php-fpm.d/zz-docker.conf
 
 RUN cd /usr/bin && curl -s http://getcomposer.org/installer | php && ln -s /usr/bin/composer.phar /usr/bin/composer
 

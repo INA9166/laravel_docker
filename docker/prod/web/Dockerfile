@@ -4,6 +4,7 @@ ENV TZ Asia/Tokyo
 
 COPY ./docker/prod/web/nginx.conf /etc/nginx/nginx.conf
 COPY ./docker/prod/web/default.conf /etc/nginx/conf.d/default.conf
+COPY ./src/laravel/public /var/www/html/laravel/public
 EXPOSE 8080
 
 RUN chown -R 101:0 /var/cache/nginx \

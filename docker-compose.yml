@@ -8,6 +8,8 @@ services:
     ports:
       - 80:8080
     container_name: container_web
+    volumes:
+       - ./src/laravel/public:/var/www/html/laravel/public
   app:
     build:
       context: .

@@ -6,6 +6,7 @@ COPY ./docker/prod/app/php.ini /usr/local/etc/php/php.ini
 COPY ./docker/prod/app/zz-docker.conf /usr/local/etc/php-fpm.d/zz-docker.conf
 COPY ./src/laravel /var/www/html/laravel
 COPY ./src/laravel/.env.example /var/www/html/laravel/.env
+RUN rm -rf /var/www/html/laravel/public/cache
 
 RUN cd /usr/bin && curl -s http://getcomposer.org/installer | php && ln -s /usr/bin/composer.phar /usr/bin/composer
 

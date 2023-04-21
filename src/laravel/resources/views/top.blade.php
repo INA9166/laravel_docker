@@ -1,6 +1,6 @@
 <html lang="ja">
     <head>
-        <link href="/css/base.css" rel="stylesheet" type="text/css">
+        <link href="/cache/css/base.css" rel="stylesheet" type="text/css">
     </head>
     <body>
         <p>{{$user->name}}</p>
