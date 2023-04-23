@@ -1,0 +1,99 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: create network.
+
+Parameters:
+  AppName:
+    Type: String
+    Default: test
+
+Resources:
+  VPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 10.0.0.0/16
+      EnableDnsHostnames: true
+      EnableDnsSupport: true
+      InstanceTenancy: default
+      Tags:
+      - Key: Name
+        Value: !Sub ${AppName}-VPC
+
+  PublicSubnet1a:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref VPC
+      AvailabilityZone: "ap-northeast-1a"
+      CidrBlock: 10.0.10.0/24
+      Tags:
+      - Key: Name
+        Value: !Sub ${AppName}-Public-Subnet-1a
+
+  PublicSubnet1c:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref VPC
+      AvailabilityZone: "ap-northeast-1a"
+      CidrBlock: 10.0.11.0/24
+      Tags:
+      - Key: Name
+        Value: !Sub ${AppName}-Public-Subnet-1c
+
+  PrivateSubnet1a:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref VPC
+      AvailabilityZone: "ap-northeast-1a"
+      CidrBlock: 10.0.20.0/24
+      Tags:
+      - Key: Name
+        Value: !Sub ${AppName}-Private-Subnet-1a
+
+  PrivateSubnet1c:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref VPC
+      AvailabilityZone: "ap-northeast-1c"
+      CidrBlock: 10.0.21.0/24
+      Tags:
+      - Key: Name
+        Value: !Sub ${AppName}-Private-Subnet-1c
+
+  InternetGateway:
+    Type: AWS::EC2::InternetGateway
+    Properties: 
+      Tags: 
+      - Key: Name
+        Value: !Sub ${AppName}-IGW
+
+  InternetGatewayAttachement:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties: 
+      InternetGatewayId: !Ref InternetGateway
+      VpcId: !Ref VPC
+
+  RouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref VPC
+      Tags:
+      - Key: Name
+        Value: !Sub ${AppName}-Route-Table
+
+  Route:
+    Type: AWS::EC2::Route
+    Properties:
+       RouteTableId: !Ref RouteTable
+       DestinationCidrBlock: 0.0.0.0/0
+       GatewayId: !Ref InternetGateway
+
+  PublicSubnet1aRouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref PublicSubnet1a
+      RouteTableId: !Ref RouteTable
+
+  PublicSubnet1cRouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref PublicSubnet1c
+      RouteTableId: !Ref RouteTable

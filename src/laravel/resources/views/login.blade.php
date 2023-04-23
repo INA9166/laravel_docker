@@ -6,7 +6,7 @@
         <form name="frm" method="post" action="{{url('/loginAuth')}}">
             @csrf
             ID：<input type="text" name="login_id">
-            <input type="submit" value="ログイン">
+            <input type="submit" value="ログイン1">
         </form>
         <img src="/cache/images/neko.jpeg">
     </body>
